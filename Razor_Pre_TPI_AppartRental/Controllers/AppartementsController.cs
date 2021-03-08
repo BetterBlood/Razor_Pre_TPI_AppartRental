@@ -6,22 +6,57 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Razor_Pre_TPI_AppartRental.Data;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Razor_Pre_TPI_AppartRental.Models;
 
 namespace Razor_Pre_TPI_AppartRental.Controllers
 {
+    
+    [Authorize]
     public class AppartementsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public AppartementsController(ApplicationDbContext context)
+        public AppartementsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
+            _userManager = userManager;
         }
+
+        [HttpGet]
+        public async Task<string> GetCurrentUserId()
+        {
+            ApplicationUser usr = await GetCurrentUserAsync();
+            return usr?.Id;
+        }
+
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
         // GET: Appartements
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Appartements.ToListAsync());
+            var userId = await GetCurrentUserId();
+            var model = await _context.Appartements.Select(x =>
+                new AppartementViewModel
+                {
+                    AppartementId = x.Id,
+                    Title = x.Title,
+                    Year = x.Year
+                }).ToListAsync();
+            foreach (var item in model)
+            {
+                var m = await _context.UserAppartements.FirstOrDefaultAsync(x =>
+                    x.UserId == userId && x.AppartementId == item.AppartementId);
+                if (m != null)
+                {
+                    item.InWishlist = true;
+                    item.Rating = m.Rating;
+                    item.Visited = m.Visited;
+                }
+            }
+            return View(model);
         }
 
         // GET: Appartements/Details/5
@@ -147,6 +182,47 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
         private bool AppartementExists(int id)
         {
             return _context.Appartements.Any(e => e.Id == id);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> AddRemove(int id, int val)
+        {
+            int retval = -1;
+            var userId = await GetCurrentUserId();
+            if (val == 1)
+            {
+                // if a record exists in UserMovies that contains both the user’s
+                // and movie’s Ids, then the movie is in the watchlist and can
+                // be removed
+                var movie = _context.UserAppartements.FirstOrDefault(x =>
+                    x.AppartementId == id && x.UserId == userId);
+                if (movie != null)
+                {
+                    _context.UserAppartements.Remove(movie);
+                    retval = 0;
+                }
+
+            }
+            else
+            {
+                // the movie is not currently in the watchlist, so we need to
+                // build a new UserMovie object and add it to the database
+                _context.UserAppartements.Add(
+                    new UserAppartement
+                    {
+                        UserId = userId,
+                        AppartementId = id,
+                        Visited = false,
+                        Rating = 0
+                    }
+                );
+                retval = 1;
+            }
+            // now we can save the changes to the database
+            await _context.SaveChangesAsync();
+            // and our return value (-1, 0, or 1) back to the script that called
+            // this method from the Index page
+            return Json(retval);
         }
     }
 }
