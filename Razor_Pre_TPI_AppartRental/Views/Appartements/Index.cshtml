@@ -24,33 +24,39 @@
             <th>
                 @Html.DisplayNameFor(model => model.Surface)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Rating)
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Year)
-                </td>
-                <td>
-                    <button id="@item.AppartementId" data-val="@item.InWishlist" class="btn">
-                        @(item.InWishlist ? " - " : " + ")
-                    </button>
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Surface)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.AppartementId">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.AppartementId">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.AppartementId">Delete</a>
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Year)
+            </td>
+            <td>
+                <button id="@item.AppartementId" data-val="@item.InWishlist" class="btn">
+                    @(item.InWishlist ? " - " : " + ")
+                </button>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Surface)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Rating)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.AppartementId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.AppartementId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.AppartementId">Delete</a>
+            </td>
+        </tr>
         }
     </tbody>
 </table>
@@ -65,20 +71,17 @@
                 var AppartementVal = btn.attr('data-val') == "False" ? 0 : 1;
 
                 $.get('/Appartements/AddRemove?id=' + AppartementId + '&val=' + AppartementVal,
-                function (data) {
-                    if (data == 0) {
-                        btn.attr('data-val', 'False');
-                        btn.html(' + ');
-                    }
-                    else if (data == 1) {
-                        btn.attr('data-val', 'True');
-                        btn.html(' - ');
-                    }
-                });
+                    function (data) {
+                        if (data == 0) {
+                            btn.attr('data-val', 'False');
+                            btn.html(' + ');
+                        }
+                        else if (data == 1) {
+                            btn.attr('data-val', 'True');
+                            btn.html(' - ');
+                        }
+                    });
             });
-
         });
-
     </script>
-
 }

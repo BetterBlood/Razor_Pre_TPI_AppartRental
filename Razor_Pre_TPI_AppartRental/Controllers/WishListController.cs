@@ -45,5 +45,37 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
             ApplicationUser user = await GetCurrentUserAsync();
             return user?.Id;
         }
+
+        [HttpGet]
+        public async Task<JsonResult> VisitOrNot(int id, int val)
+        {
+            int retval = -1;
+            var userId = await GetCurrentUserId();
+            if (val == 1)
+            {
+                var appartement = _context.UserAppartements.FirstOrDefault(x => x.AppartementId == id && x.UserId == userId);
+                if (appartement != null)
+                {
+                    appartement.Visited = false;
+                    retval = 0;
+                }
+
+            }
+            else
+            {
+                var appartement = _context.UserAppartements.FirstOrDefault(x => x.AppartementId == id && x.UserId == userId);
+                if (appartement != null)
+                {
+                    appartement.Visited = true;
+                    retval = 1;
+                }
+            }
+
+            // now we can save the changes to the database
+            await _context.SaveChangesAsync();
+            // and our return value (-1, 0, or 1) back to the script that called
+            // this method from the Index page
+            return Json(retval);
+        }
     }
 }

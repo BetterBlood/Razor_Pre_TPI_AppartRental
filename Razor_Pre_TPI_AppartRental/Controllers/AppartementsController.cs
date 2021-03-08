@@ -43,12 +43,14 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
                 {
                     AppartementId = x.Id,
                     Title = x.Title,
-                    Year = x.Year
+                    Year = x.Year,
+                    Surface = x.Surface
                 }).ToListAsync();
+
             foreach (var item in model)
             {
-                var m = await _context.UserAppartements.FirstOrDefaultAsync(x =>
-                    x.UserId == userId && x.AppartementId == item.AppartementId);
+                var m = await _context.UserAppartements.FirstOrDefaultAsync(x => x.UserId == userId && x.AppartementId == item.AppartementId);
+                
                 if (m != null)
                 {
                     item.InWishlist = true;
@@ -56,6 +58,7 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
                     item.Visited = m.Visited;
                 }
             }
+
             return View(model);
         }
 
@@ -158,8 +161,7 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
                 return NotFound();
             }
 
-            var appartement = await _context.Appartements
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var appartement = await _context.Appartements .FirstOrDefaultAsync(m => m.Id == id);
             if (appartement == null)
             {
                 return NotFound();
@@ -194,11 +196,10 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
                 // if a record exists in UserMovies that contains both the user’s
                 // and movie’s Ids, then the movie is in the watchlist and can
                 // be removed
-                var movie = _context.UserAppartements.FirstOrDefault(x =>
-                    x.AppartementId == id && x.UserId == userId);
-                if (movie != null)
+                var appartement = _context.UserAppartements.FirstOrDefault(x => x.AppartementId == id && x.UserId == userId);
+                if (appartement != null)
                 {
-                    _context.UserAppartements.Remove(movie);
+                    _context.UserAppartements.Remove(appartement);
                     retval = 0;
                 }
 
@@ -213,9 +214,33 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
                         UserId = userId,
                         AppartementId = id,
                         Visited = false,
-                        Rating = 0
+                        Rating = 0 // reset à zéro a chaque fois...
                     }
                 );
+                retval = 1;
+            }
+            // now we can save the changes to the database
+            await _context.SaveChangesAsync();
+            // and our return value (-1, 0, or 1) back to the script that called
+            // this method from the Index page
+            return Json(retval);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> Rate(int id, int val)
+        {
+            int retval = -1;
+            var userId = await GetCurrentUserId();
+            if (val == 1)
+            {
+                var appartement = _context.UserAppartements.FirstOrDefault(x => x.AppartementId == id && x.UserId == userId);
+                retval = 0;
+                appartement.Rating--;
+            }
+            else
+            {
+                var appartement = _context.UserAppartements.FirstOrDefault(x => x.AppartementId == id && x.UserId == userId);
+                appartement.Rating++;
                 retval = 1;
             }
             // now we can save the changes to the database
