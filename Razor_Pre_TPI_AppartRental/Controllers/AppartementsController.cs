@@ -43,6 +43,7 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
                 {
                     AppartementId = x.Id,
                     Title = x.Title,
+                    Surface = x.Surface,
                     Year = x.Year
                 }).ToListAsync();
             foreach (var item in model)
@@ -194,8 +195,7 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
                 // if a record exists in UserMovies that contains both the user’s
                 // and movie’s Ids, then the movie is in the watchlist and can
                 // be removed
-                var movie = _context.UserAppartements.FirstOrDefault(x =>
-                    x.AppartementId == id && x.UserId == userId);
+                var movie = _context.UserAppartements.FirstOrDefault(x => x.AppartementId == id && x.UserId == userId);
                 if (movie != null)
                 {
                     _context.UserAppartements.Remove(movie);

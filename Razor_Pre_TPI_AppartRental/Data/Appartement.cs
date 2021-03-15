@@ -11,5 +11,6 @@ namespace Razor_Pre_TPI_AppartRental.Data
         public string Title { get; set; }
         public int Year { get; set; }
         public int Surface { get; set; }
+        public int Rating { get; set; }
     }
 }

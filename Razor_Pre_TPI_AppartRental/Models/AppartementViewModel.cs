@@ -11,7 +11,7 @@ namespace Razor_Pre_TPI_AppartRental.Models
         public string Title { get; set; }
         public int Year { get; set; }
         public bool InWishlist { get; set; }
-        public string Surface { get; set; }
+        public int Surface { get; set; }
         public bool Visited { get; set; }
         public int? Rating { get; set; }
         

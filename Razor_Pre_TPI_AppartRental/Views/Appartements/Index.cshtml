@@ -30,27 +30,27 @@
     <tbody>
         @foreach (var item in Model)
         {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Title)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Year)
-                </td>
-                <td>
-                    <button id="@item.AppartementId" data-val="@item.InWishlist" class="btn">
-                        @(item.InWishlist ? " - " : " + ")
-                    </button>
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Surface)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.AppartementId">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.AppartementId">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.AppartementId">Delete</a>
-                </td>
-            </tr>
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Year)
+            </td>
+            <td>
+                <button id="@item.AppartementId" data-val="@item.InWishlist" class="btn btnWish">
+                    @(item.InWishlist ? " - " : " + ")
+                </button>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Surface)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.AppartementId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.AppartementId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.AppartementId">Delete</a>
+            </td>
+        </tr>
         }
     </tbody>
 </table>
@@ -59,7 +59,7 @@
 @section Scripts {
     <script>
         jQuery(document).ready(function () {
-            $('.btn').click(function (e) {
+            $('.btnWish').click(function (e) {
                 var btn = $(this);
                 var AppartementId = btn.attr('id');
                 var AppartementVal = btn.attr('data-val') == "False" ? 0 : 1;

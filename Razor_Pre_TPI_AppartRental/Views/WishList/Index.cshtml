@@ -1,8 +1,6 @@
 ﻿@model IEnumerable<Razor_Pre_TPI_AppartRental.Models.AppartementViewModel>
 
-@{
-    ViewData["Title"] = "Index";
-}
+@{ ViewData["Title"] = "Index"; }
 
 <h1>Index</h1>
 
@@ -22,9 +20,6 @@
                 @Html.DisplayNameFor(model => model.Year)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.InWishlist)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Visited)
             </th>
             <th>
@@ -34,32 +29,58 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.AppartementId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Year)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.InWishlist)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Visited)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Rating)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
+        @foreach (var item in Model)
+        {
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.AppartementId)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Title)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Year)
+    </td>
+    <td>
+        <button id="@item.AppartementId" data-val="@item.Visited" class="btn btnVisited border-dark">
+            @(item.Visited ? " not visited yet " : " ✓ ")
+        </button>
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Rating)
+    </td>
+    <td>
+        @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
+        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
+        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+    </td>
+</tr>
 }
     </tbody>
 </table>
+
+
+@section Scripts {
+    <script>
+        jQuery(document).ready(function () {
+            $('.btnVisited').click(function (e) {
+                var btn = $(this);
+                var AppartementId = btn.attr('id');
+                var AppartementVal = btn.attr('data-val') == "False" ? 0 : 1;
+
+                $.get('/WishList/VisitedOrNot?id=' + AppartementId + '&val=' + AppartementVal,
+                    function (data) {
+                        if (data == 0) {
+                            btn.attr('data-val', 'False');
+                            btn.html(' ✓ ');
+                        }
+                        else if (data == 1) {
+                            btn.attr('data-val', 'True');
+                            btn.html(' not visited yet ');
+                        }
+                    });
+            });
+
+        });
+    </script>
+}
