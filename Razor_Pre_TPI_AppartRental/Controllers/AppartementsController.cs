@@ -46,6 +46,7 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
                     Surface = x.Surface,
                     Year = x.Year
                 }).ToListAsync();
+
             foreach (var item in model)
             {
                 var m = await _context.UserAppartements.FirstOrDefaultAsync(x => x.UserId == userId && x.AppartementId == item.AppartementId);
@@ -184,8 +185,13 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> AddRemove(int id, int val)
+        public async Task<JsonResult> AddRemove(int appartId, int val)
         {
+            // DEBUG :
+            //Console.WriteLine("-----------------------" + _context.Appartements + "-----------------------");
+            Console.Error.WriteLine("-----------------------" + _context.Appartements + "-----------------------");
+
+
             int retval = -1;
             var userId = await GetCurrentUserId();
             if (val == 1)
@@ -193,27 +199,28 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
                 // if a record exists in UserMovies that contains both the user’s
                 // and movie’s Ids, then the movie is in the watchlist and can
                 // be removed
-                var movie = _context.UserAppartements.FirstOrDefault(x => x.AppartementId == id && x.UserId == userId);
-                if (movie != null)
+                var appart = _context.UserAppartements.FirstOrDefault(x => x.AppartementId == appartId && x.UserId == userId);
+                if (appart != null)
                 {
-                    _context.UserAppartements.Remove(movie);
+                    _context.UserAppartements.Remove(appart);
                     retval = 0;
                 }
-
             }
             else
             {
                 // the movie is not currently in the watchlist, so we need to
                 // build a new UserMovie object and add it to the database
+                int rating = _context.Appartements.Find(appartId).Rating;// QUESTION : pourquoi je ne peux pas accèder à la liste d'appartement ? _context.Appartements.Find(appartId).Rating
+
                 _context.UserAppartements.Add(
                     new UserAppartement
                     {
                         UserId = userId,
-                        AppartementId = id,
-                        Visited = false,
-                        Rating = 0
+                        AppartementId = appartId,
+                        Visited = false
                     }
                 );
+
                 retval = 1;
             }
             // now we can save the changes to the database

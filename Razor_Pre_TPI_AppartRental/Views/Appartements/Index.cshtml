@@ -70,7 +70,7 @@
                 var AppartementId = btn.attr('id');
                 var AppartementVal = btn.attr('data-val') == "False" ? 0 : 1;
 
-                $.get('/Appartements/AddRemove?id=' + AppartementId + '&val=' + AppartementVal,
+                $.get('/Appartements/AddRemove?appartId=' + AppartementId + '&val=' + AppartementVal,
                 function (data) {
                     if (data == 0) {
                         btn.attr('data-val', 'False');
