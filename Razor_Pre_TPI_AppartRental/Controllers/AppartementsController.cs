@@ -48,8 +48,7 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
                 }).ToListAsync();
             foreach (var item in model)
             {
-                var m = await _context.UserAppartements.FirstOrDefaultAsync(x =>
-                    x.UserId == userId && x.AppartementId == item.AppartementId);
+                var m = await _context.UserAppartements.FirstOrDefaultAsync(x => x.UserId == userId && x.AppartementId == item.AppartementId);
                 if (m != null)
                 {
                     item.InWishlist = true;
@@ -68,8 +67,7 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
                 return NotFound();
             }
 
-            var appartement = await _context.Appartements
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var appartement = await _context.Appartements.FirstOrDefaultAsync(m => m.Id == id);
             if (appartement == null)
             {
                 return NotFound();

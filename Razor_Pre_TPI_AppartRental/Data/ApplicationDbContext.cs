@@ -19,8 +19,7 @@ namespace Razor_Pre_TPI_AppartRental.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<UserAppartement>()
-            .HasKey(t => new { t.UserId, t.AppartementId });
+            modelBuilder.Entity<UserAppartement>().HasKey(t => new { t.UserId, t.AppartementId });
         }
     }
 }

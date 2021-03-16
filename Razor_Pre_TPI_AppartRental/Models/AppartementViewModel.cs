@@ -13,7 +13,7 @@ namespace Razor_Pre_TPI_AppartRental.Models
         public bool InWishlist { get; set; }
         public int Surface { get; set; }
         public bool Visited { get; set; }
-        public int? Rating { get; set; }
+        public int Rating { get; set; }
         
     }
 }
