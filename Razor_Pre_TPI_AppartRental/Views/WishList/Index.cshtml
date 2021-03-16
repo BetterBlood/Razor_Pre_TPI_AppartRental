@@ -43,7 +43,7 @@
     </td>
     <td>
         <button id="@item.AppartementId" data-val="@item.Visited" class="btn btnVisited border-dark">
-            @(item.Visited ? " not visited yet " : " ✓ ")
+            @(item.Visited ? " ✓ " : " not visited yet ")
         </button>
     </td>
     <td>
@@ -72,15 +72,14 @@
                     function (data) {
                         if (data == 0) {
                             btn.attr('data-val', 'False');
-                            btn.html(' ✓ ');
+                            btn.html(' not visited yet ');
                         }
                         else if (data == 1) {
                             btn.attr('data-val', 'True');
-                            btn.html(' not visited yet ');
+                            btn.html(' ✓ ');
                         }
                     });
             });
-
         });
     </script>
 }

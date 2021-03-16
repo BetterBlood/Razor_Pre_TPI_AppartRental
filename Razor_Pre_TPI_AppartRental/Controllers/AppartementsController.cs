@@ -210,14 +210,15 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
             {
                 // the movie is not currently in the watchlist, so we need to
                 // build a new UserMovie object and add it to the database
-                int rating = _context.Appartements.Find(appartId).Rating;// QUESTION : pourquoi je ne peux pas accèder à la liste d'appartement ? _context.Appartements.Find(appartId).Rating
+                int rating = 5;// QUESTION : pourquoi je ne peux pas accèder à la liste d'appartement ? _context.Appartements.Find(appartId).Rating
 
                 _context.UserAppartements.Add(
                     new UserAppartement
                     {
                         UserId = userId,
                         AppartementId = appartId,
-                        Visited = false
+                        Visited = false,
+                        Rating = rating
                     }
                 );
 
