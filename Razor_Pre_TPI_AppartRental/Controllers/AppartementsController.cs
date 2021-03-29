@@ -211,7 +211,8 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
             {
                 // the movie is not currently in the watchlist, so we need to
                 // build a new UserMovie object and add it to the database
-                int rating = 5;// QUESTION : pourquoi je ne peux pas accèder à la liste d'appartement ? _context.Appartements.Find(appartId).Rating
+                //int rating = 5;// QUESTION : pourquoi je ne peux pas accèder à la liste d'appartement ? (comme la ligne en dessous)
+                                int rating = _context.Appartements.Find(appartId).Rating;
 
                 _context.UserAppartements.Add(
                     new UserAppartement
@@ -237,12 +238,43 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
         {
             int retval = 1;
             var userId = await GetCurrentUserId();
-            var appart = _context.UserAppartements.FirstOrDefault(x => x.AppartementId == appartId && x.UserId == userId);
+            var appart = _context.UserAppartements.FirstOrDefault(x => x.AppartementId == appartId && x.UserId == userId); // QUESTION : pourquoi c'est toujour null ?
 
             if (appart != null)
             {
                 _context.UserAppartements.Remove(appart);
                 retval = 0;
+            }
+
+            await _context.SaveChangesAsync();
+            return Json(retval);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> Rate(int appartId, int val)
+        {
+            int retval = -1;
+            var userId = await GetCurrentUserId();
+
+            if (val == 1)
+            {
+                var appart = _context.UserAppartements.FirstOrDefault(x => x.AppartementId == appartId && x.UserId == userId); // QUESTION : pourquoi c'est toujour null ?
+
+                if (appart != null)
+                {
+                    _context.Appartements.Find(appartId).Rating++;
+                    retval = 0;
+                }
+            }
+            else
+            {
+                var appart = _context.UserAppartements.FirstOrDefault(x => x.AppartementId == appartId && x.UserId == userId); // QUESTION : pourquoi c'est toujour null ?
+
+                if (appart != null)
+                {
+                    _context.Appartements.Find(appartId).Rating--;
+                    retval = 1;
+                }
             }
 
             await _context.SaveChangesAsync();

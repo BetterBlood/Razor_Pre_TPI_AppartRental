@@ -4,9 +4,6 @@
 
 <h1>Index</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -47,6 +44,9 @@
         </button>
     </td>
     <td>
+        <button id="@item.AppartementId" data-val="@item.Rating" class="btn btnRate border-dark">
+            @(item.Visited ? " rate " : " unrate ")
+        </button>
         @Html.DisplayFor(modelItem => item.Rating)
     </td>
     <td>
@@ -86,6 +86,28 @@
                     });
             });
 
+            $('.btnRate').click(function (e) {
+                var btn = $(this);
+                var AppartementId = btn.attr('id');
+                var AppartementVal = btn.attr('data-val') == "False" ? 0 : 1;
+
+                $.get('/Appartements/Rate?id=' + AppartementId + '&val=' + AppartementVal,
+                    function (data) {
+                        if (data == 0) {
+                            btn.attr('data-val', 'False');
+                            btn.html(' unrate ');
+                        }
+                        else if (data == 1) {
+                            btn.attr('data-val', 'True');
+                            btn.html(' rate ');
+                        }
+                        else {
+                            console.log("error");
+                        }
+                        console.log("id = " + AppartementId + " val = " + AppartementVal + " retour = " + data);
+                    });
+            });
+
             $('.aRemoveFromWish').click(function (e) {
                 var btn = $(this);
                 var AppartementId = btn.attr('id');
@@ -94,11 +116,11 @@
                     function (data) {
                         if (data == 0) {
                             // afficher que ça a réussi ?
-                            console.log("0");
+                            console.log("remove works");
                         }
                         else if (data == 1) {
                             // le contraire ?
-                            console.log("1");
+                            console.log("remove doesn't work");
                         }
                     });
             });
