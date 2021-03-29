@@ -12,7 +12,7 @@ using Razor_Pre_TPI_AppartRental.Models;
 
 namespace Razor_Pre_TPI_AppartRental.Controllers
 {
-    
+
     [Authorize]
     public class AppartementsController : Controller
     {
@@ -194,6 +194,7 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
 
             int retval = -1;
             var userId = await GetCurrentUserId();
+
             if (val == 1)
             {
                 // if a record exists in UserMovies that contains both the user’s
@@ -228,6 +229,23 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
             await _context.SaveChangesAsync();
             // and our return value (-1, 0, or 1) back to the script that called
             // this method from the Index page
+            return Json(retval);
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> Remove(int appartId)
+        {
+            int retval = 1;
+            var userId = await GetCurrentUserId();
+            var appart = _context.UserAppartements.FirstOrDefault(x => x.AppartementId == appartId && x.UserId == userId);
+
+            if (appart != null)
+            {
+                _context.UserAppartements.Remove(appart);
+                retval = 0;
+            }
+
+            await _context.SaveChangesAsync();
             return Json(retval);
         }
     }

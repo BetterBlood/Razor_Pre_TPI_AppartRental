@@ -47,18 +47,30 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> VisitedOrNot(int id, int val)
+        public async Task<JsonResult> VisitedOrNot(int appartId, int val)
         {
             int retval = -1;
             var userId = await GetCurrentUserId();
+
             if (val == 1)
             {
-                retval = 0;
+                var appart = _context.UserAppartements.FirstOrDefault(x => x.AppartementId == appartId && x.UserId == userId); // QUESTION : pourquoi c'est toujour null ??
+                if (appart != null)
+                {
+                    appart.Visited = false;
+                    retval = 0;
+                }
             }
             else
             {
-                retval = 1;
+                var appart = _context.UserAppartements.FirstOrDefault(x => x.AppartementId == appartId && x.UserId == userId);
+                if (appart != null)
+                {
+                    appart.Visited = true;
+                    retval = 1;
+                }
             }
+
             // now we can save the changes to the database
             await _context.SaveChangesAsync();
             // and our return value (-1, 0, or 1) back to the script that called

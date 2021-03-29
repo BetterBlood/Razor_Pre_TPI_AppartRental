@@ -50,12 +50,11 @@
         @Html.DisplayFor(modelItem => item.Rating)
     </td>
     <td>
-        @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-        @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-        @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+        <a asp-action="Edit" asp-controller="Appartements" asp-route-id="@item.AppartementId">Edit</a> |
+        <a asp-action="Details" asp-controller="Appartements" asp-route-id="@item.AppartementId">Details</a> |
+        <a asp-route-id="@item.AppartementId" class="aRemoveFromWish">Remove</a>
     </td>
-</tr>
-}
+</tr>}
     </tbody>
 </table>
 
@@ -74,12 +73,36 @@
                             btn.attr('data-val', 'False');
                             btn.html(' not visited yet ');
                         }
-                        else if (data == 1) {
+                        else if (data == 1)
+                        {
                             btn.attr('data-val', 'True');
                             btn.html(' ✓ ');
+                        }
+                        else
+                        {
+                            console.log("error");
+                        }
+                        console.log("id = " + AppartementId + " val = " + AppartementVal + " retour = " + data);
+                    });
+            });
+
+            $('.aRemoveFromWish').click(function (e) {
+                var btn = $(this);
+                var AppartementId = btn.attr('id');
+
+                $.get('/Appartements/Remove?appartId=' + AppartementId,
+                    function (data) {
+                        if (data == 0) {
+                            // afficher que ça a réussi ?
+                            console.log("0");
+                        }
+                        else if (data == 1) {
+                            // le contraire ?
+                            console.log("1");
                         }
                     });
             });
         });
     </script>
 }
+
