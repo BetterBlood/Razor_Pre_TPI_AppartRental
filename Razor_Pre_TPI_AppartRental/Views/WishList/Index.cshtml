@@ -44,10 +44,9 @@
         </button>
     </td>
     <td>
-        <button id="@item.AppartementId" data-val="@item.Rating" class="btn btnRate border-dark">
-            @(item.Visited ? " rate " : " unrate ")
+        <button id="@item.AppartementId" data-val="@(item.Rating <= 5)" class="btn btnRate border-dark">
+            @(item.Rating <= 5 ? " rate (" + item.Rating + ")" : " unrate (" + item.Rating + ")")
         </button>
-        @Html.DisplayFor(modelItem => item.Rating)
     </td>
     <td>
         <a asp-action="Edit" asp-controller="Appartements" asp-route-id="@item.AppartementId">Edit</a> |
@@ -67,7 +66,7 @@
                 var AppartementId = btn.attr('id');
                 var AppartementVal = btn.attr('data-val') == "False" ? 0 : 1;
 
-                $.get('/WishList/VisitedOrNot?id=' + AppartementId + '&val=' + AppartementVal,
+                $.get('/WishList/VisitedOrNot?appartId=' + AppartementId + '&val=' + AppartementVal,
                     function (data) {
                         if (data == 0) {
                             btn.attr('data-val', 'False');
@@ -91,20 +90,31 @@
                 var AppartementId = btn.attr('id');
                 var AppartementVal = btn.attr('data-val') == "False" ? 0 : 1;
 
-                $.get('/Appartements/Rate?id=' + AppartementId + '&val=' + AppartementVal,
+                $.get('/Appartements/Rate?appartId=' + AppartementId + '&val=' + AppartementVal,
                     function (data) {
                         if (data == 0) {
                             btn.attr('data-val', 'False');
                             btn.html(' unrate ');
+                            console.log("ok -> sets to unrate !");
                         }
                         else if (data == 1) {
                             btn.attr('data-val', 'True');
                             btn.html(' rate ');
+                            console.log("ok -> sets to rate !");
                         }
                         else {
                             console.log("error");
                         }
-                        console.log("id = " + AppartementId + " val = " + AppartementVal + " retour = " + data);
+                        console.log("(rate) id = " + AppartementId + " val = " + AppartementVal + " retour = " + data);
+                    });
+
+                $.get('/WishList/UpdateRate?appartId=' + AppartementId + '&val=' + AppartementVal,
+                    function (data) {
+                        if (data != 0) {
+                            console.log("error");
+                        }
+                        console.log("(updateRate) id = " + AppartementId + " retour = " + data);
+                        location.reload(); // QUESTION pas sur que cela soit une bonne idée pour les performances ? possible de loader une partie de la page seulement ? oui bravo 6
                     });
             });
 

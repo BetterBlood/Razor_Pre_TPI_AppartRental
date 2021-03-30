@@ -44,17 +44,18 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
                     AppartementId = x.Id,
                     Title = x.Title,
                     Surface = x.Surface,
-                    Year = x.Year
+                    Year = x.Year,
+                    Rating = x.Rating
                 }).ToListAsync();
 
             foreach (var item in model)
             {
-                var m = await _context.UserAppartements.FirstOrDefaultAsync(x => x.UserId == userId && x.AppartementId == item.AppartementId);
+                var m = await _context.UserAppartements.FirstOrDefaultAsync(x => x.UserId == userId && x.AppartementId == item.AppartementId); // QUESTION : pourquoi ici on prend UserAppartement au lieu de juste appartement
+                //var m = await _context.Appartements.FirstOrDefaultAsync(x => x.Id == item.AppartementId);
                 if (m != null)
                 {
                     item.InWishlist = true;
-                    item.Rating = m.Rating;
-                    item.Visited = m.Visited;
+                    //item.Visited = m.Visited;
                 }
             }
             return View(model);
@@ -211,8 +212,8 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
             {
                 // the movie is not currently in the watchlist, so we need to
                 // build a new UserMovie object and add it to the database
-                //int rating = 5;// QUESTION : pourquoi je ne peux pas accèder à la liste d'appartement ? (comme la ligne en dessous)
-                                int rating = _context.Appartements.Find(appartId).Rating;
+                //int rating = 0;// QUESTION : pourquoi je ne peux pas accèder à la liste d'appartement ? (comme la ligne en dessous) // mmm en fait si ça marche je comprends pas pk...
+                int rating = _context.Appartements.Find(appartId).Rating;
 
                 _context.UserAppartements.Add(
                     new UserAppartement
@@ -238,7 +239,7 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
         {
             int retval = 1;
             var userId = await GetCurrentUserId();
-            var appart = _context.UserAppartements.FirstOrDefault(x => x.AppartementId == appartId && x.UserId == userId); // QUESTION : pourquoi c'est toujour null ?
+            var appart = _context.UserAppartements.FirstOrDefault(x => x.AppartementId == appartId && x.UserId == userId); // QUESTION : pourquoi c'est toujours null ? ... mauvais lien...
 
             if (appart != null)
             {
@@ -258,7 +259,7 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
 
             if (val == 1)
             {
-                var appart = _context.UserAppartements.FirstOrDefault(x => x.AppartementId == appartId && x.UserId == userId); // QUESTION : pourquoi c'est toujour null ?
+                var appart = _context.Appartements.FirstOrDefault(x => x.Id == appartId); // QUESTION : pourquoi c'est toujours null ? ... mauvais lien...
 
                 if (appart != null)
                 {
@@ -268,7 +269,7 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
             }
             else
             {
-                var appart = _context.UserAppartements.FirstOrDefault(x => x.AppartementId == appartId && x.UserId == userId); // QUESTION : pourquoi c'est toujour null ?
+                var appart = _context.Appartements.FirstOrDefault(x => x.Id == appartId); // QUESTION : pourquoi c'est toujours null ? ... mauvais lien...
 
                 if (appart != null)
                 {
