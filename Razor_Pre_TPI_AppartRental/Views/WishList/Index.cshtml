@@ -51,7 +51,7 @@
     <td>
         <a asp-action="Edit" asp-controller="Appartements" asp-route-id="@item.AppartementId">Edit</a> |
         <a asp-action="Details" asp-controller="Appartements" asp-route-id="@item.AppartementId">Details</a> |
-        <a asp-route-id="@item.AppartementId" class="aRemoveFromWish">Remove</a>
+        <a asp-route-id="@item.AppartementId" id="@item.AppartementId" class="aRemoveFromWish">Remove</a>
     </td>
 </tr>}
     </tbody>
@@ -114,7 +114,7 @@
                             console.log("error");
                         }
                         console.log("(updateRate) id = " + AppartementId + " retour = " + data);
-                        location.reload(); // QUESTION pas sur que cela soit une bonne idée pour les performances ? possible de loader une partie de la page seulement ? oui bravo 6
+                        location.reload(); // QUESTION pas sur que cela soit une bonne idée pour les performances ? possible de loader une partie de la page seulement ?
                     });
             });
 
@@ -122,15 +122,17 @@
                 var btn = $(this);
                 var AppartementId = btn.attr('id');
 
-                $.get('/Appartements/Remove?appartId=' + AppartementId,
+                $.get('/Appartements/AddRemove?appartId=' + AppartementId + '&val=1',
                     function (data) {
                         if (data == 0) {
-                            // afficher que ça a réussi ?
-                            console.log("remove works");
+                            console.log("remove works"); // DEBUG
+                            location.reload(); // QUESTION pas sur que cela soit une bonne idée pour les performances ? possible de loader une partie de la page seulement ?
                         }
-                        else if (data == 1) {
-                            // le contraire ?
-                            console.log("remove doesn't work");
+                        else if (data == -1) {
+                            console.log("remove doesn't work"); // DEBUG
+                        }
+                        else {
+                            console.log("remove pas normal ?? return val = " + data); // DEBUG
                         }
                     });
             });

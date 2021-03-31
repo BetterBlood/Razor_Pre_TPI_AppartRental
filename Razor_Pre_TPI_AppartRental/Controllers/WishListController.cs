@@ -86,16 +86,17 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
 
             var userAppart = _context.UserAppartements.FirstOrDefault(x => x.AppartementId == appartId && x.UserId == userId);
             var appart = _context.Appartements.FirstOrDefault(x => x.Id == appartId);
+            //_context.Users
 
             if (appart != null && userAppart != null)
             {
                 if (val == 0)
                 {
-                    userAppart.Rating = appart.Rating - 1;
+                    userAppart.Rating = appart.Rating - 1; // QUESTION : j'aime pas trop utiliser cette technique mais c'est le seul moyen que j'ai trouvé pour que ce soit juste
                 }
                 else
                 {
-                    userAppart.Rating = appart.Rating + 1;
+                    userAppart.Rating = appart.Rating + 1; // QUESTION : j'aime pas trop utiliser cette technique mais c'est le seul moyen que j'ai trouvé pour que ce soit juste
                 }
                 
                 retval = 0;

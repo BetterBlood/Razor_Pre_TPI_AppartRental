@@ -207,6 +207,10 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
                     _context.UserAppartements.Remove(appart);
                     retval = 0;
                 }
+                else
+                {
+                    retval = 2;
+                }
             }
             else
             {
@@ -235,34 +239,31 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> Remove(int appartId)
-        {
-            int retval = 1;
-            var userId = await GetCurrentUserId();
-            var appart = _context.UserAppartements.FirstOrDefault(x => x.AppartementId == appartId && x.UserId == userId); // QUESTION : pourquoi c'est toujours null ? ... mauvais lien...
-
-            if (appart != null)
-            {
-                _context.UserAppartements.Remove(appart);
-                retval = 0;
-            }
-
-            await _context.SaveChangesAsync();
-            return Json(retval);
-        }
-
-        [HttpGet]
         public async Task<JsonResult> Rate(int appartId, int val)
         {
             int retval = -1;
             var userId = await GetCurrentUserId();
+            var user = await GetCurrentUserAsync();
 
             if (val == 1)
             {
                 var appart = _context.Appartements.FirstOrDefault(x => x.Id == appartId); // QUESTION : pourquoi c'est toujours null ? ... mauvais lien...
-
-                if (appart != null)
+                var test = user.RatedAppartementsIds;
+                if (appart != null)// && !user.RatedAppartementsIds.Contains(appartId))
                 {
+                    bool inList = false;
+                    foreach(RatingInfo infos in test)
+                    {
+                        if (infos.RatedAppartementsId == appartId)
+                        {
+                            inList = true;
+                        }
+                    }
+                    if (!inList) // TODO !!! faire l'autre partie (le remove) et finir de tester cette partie !!!
+                    {
+                        user.RatedAppartementsIds.Add(new RatingInfo { RatedAppartementsId = appartId });
+                    }
+                    //user.RatedAppartementsIds.Add(appartId);
                     _context.Appartements.Find(appartId).Rating++;
                     retval = 0;
                 }
@@ -271,8 +272,9 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
             {
                 var appart = _context.Appartements.FirstOrDefault(x => x.Id == appartId); // QUESTION : pourquoi c'est toujours null ? ... mauvais lien...
 
-                if (appart != null)
+                if (appart != null)// && user.RatedAppartementsIds.Contains(appartId))
                 {
+                    //user.RatedAppartementsIds.Remove(appartId);
                     _context.Appartements.Find(appartId).Rating--;
                     retval = 1;
                 }
