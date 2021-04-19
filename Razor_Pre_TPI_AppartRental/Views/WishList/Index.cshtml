@@ -45,7 +45,7 @@
     </td>
     <td>
         <button id="@item.AppartementId" data-val="@(item.Rating <= 5)" class="btn btnRate border-dark">
-            @(item.Rating <= 5 ? " rate (" + item.Rating + ")" : " unrate (" + item.Rating + ")")
+            @( item.Rating <= 5 ? " rate (" + item.Rating + ")" : " unrate (" + item.Rating + ")") <!--Question : comment on accède a l'utilisateur ? ( si j'aimerais par exemple faire un affichage différent en fonction de la présence ou nom de l'id de l'appartement dans une liste que l'utilisateur possède ?-->
         </button>
     </td>
     <td>

@@ -1,13 +1,23 @@
 ﻿@model IEnumerable<Razor_Pre_TPI_AppartRental.Models.AppartementViewModel>
 
-@{
-    ViewData["Title"] = "Index";
-}
+@{ ViewData["Title"] = "Index"; }
 
 <h1>Index</h1>
 
+@{ if (User.IsInRole("0"))
+                {
+    <p>testtesttesttest</p> }
+                else if (User.IsInRole("admin"))
+                {
+    <p>admin</p> }
+                else if (User.IsInRole("ADMIN"))
+                {
+    <p>ADMIN</p> }
+                else
+                {
+    <p>ooooooooooooooooooooooo</p> } }
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create">Create New</a> <!--Question : comment on accède a l'utilisateur ? (je voudrai afficher ce bouton seulement si l'utilisateur a les droit admin par exemple)-->
 </p>
 <table class="table">
     <thead>
@@ -33,31 +43,30 @@
     <tbody>
         @foreach (var item in Model)
         {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Year)
-            </td>
-            <td>
-                <button id="@item.AppartementId" data-val="@item.InWishlist" class="btn btnWish">
-                    @(item.InWishlist ? " - " : " + ")
-                </button>
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Surface)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Rating)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.AppartementId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.AppartementId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.AppartementId">Delete</a>
-            </td>
-        </tr>
-        }
+<tr>
+    <td>
+        @Html.DisplayFor(modelItem => item.Title)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Year)
+    </td>
+    <td>
+        <button id="@item.AppartementId" data-val="@item.InWishlist" class="btn btnWish">
+            @(item.InWishlist ? " - " : " + ")
+        </button>
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Surface)
+    </td>
+    <td>
+        @Html.DisplayFor(modelItem => item.Rating)
+    </td>
+    <td>
+        <a asp-action="Edit" asp-route-id="@item.AppartementId">Edit</a> |
+        <a asp-action="Details" asp-route-id="@item.AppartementId">Details</a> |
+        <a asp-action="Delete" asp-route-id="@item.AppartementId">Delete</a>
+    </td>
+</tr>}
     </tbody>
 </table>
 

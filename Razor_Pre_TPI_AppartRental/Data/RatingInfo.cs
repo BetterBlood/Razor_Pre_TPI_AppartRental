@@ -10,5 +10,6 @@ namespace Razor_Pre_TPI_AppartRental.Data
         public int Id { get; set; }
 
         public int RatedAppartementsId { get; set; }
+
     }
 }

@@ -247,36 +247,63 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
 
             if (val == 1)
             {
-                var appart = _context.Appartements.FirstOrDefault(x => x.Id == appartId); // QUESTION : pourquoi c'est toujours null ? ... mauvais lien...
-                var test = user.RatedAppartementsIds;
+                var appart = _context.Appartements.FirstOrDefault(x => x.Id == appartId);
+
                 if (appart != null)// && !user.RatedAppartementsIds.Contains(appartId))
                 {
                     bool inList = false;
-                    foreach(RatingInfo infos in test)
+                    var ratedIds = user.RatedAppartementsIds;
+
+                    foreach(RatingInfo info in ratedIds) // parcour la list des appartements déjà noté par l'utilisateur
                     {
-                        if (infos.RatedAppartementsId == appartId)
+                        if (info.RatedAppartementsId == appartId) // si l'appart y est déjà on modifie le bool inList
                         {
                             inList = true;
+                            retval = 2;
                         }
                     }
-                    if (!inList) // TODO !!! faire l'autre partie (le remove) et finir de tester cette partie !!!
+
+                    if (!inList) // TODO : régler problème de cette partie
                     {
-                        user.RatedAppartementsIds.Add(new RatingInfo { RatedAppartementsId = appartId });
+                        RatingInfo info = new RatingInfo { Id = ratedIds.Count(), RatedAppartementsId = appartId };
+                        //user.RatedAppartementsIds.Add(info); // QUESTION : cette ligne ne fonctionne pas, je ne comprends pas pour quoi
+                        retval = 0;
                     }
-                    //user.RatedAppartementsIds.Add(appartId);
-                    _context.Appartements.Find(appartId).Rating++;
-                    retval = 0;
+
+                    appart.Rating++; // _context.Appartements.Find(appartId).Rating++;
                 }
             }
             else
             {
-                var appart = _context.Appartements.FirstOrDefault(x => x.Id == appartId); // QUESTION : pourquoi c'est toujours null ? ... mauvais lien...
+                var appart = _context.Appartements.FirstOrDefault(x => x.Id == appartId);
 
                 if (appart != null)// && user.RatedAppartementsIds.Contains(appartId))
                 {
-                    //user.RatedAppartementsIds.Remove(appartId);
-                    _context.Appartements.Find(appartId).Rating--;
-                    retval = 1;
+                    bool inList = false;
+                    
+                    var ratedIds = user.RatedAppartementsIds;
+
+                    foreach (RatingInfo info in ratedIds) // parcour la list des appartements déjà noté par l'utilisateur
+                    {
+                        if (info.RatedAppartementsId == appartId) // si l'appart y est déjà on modifie le bool inList
+                        {
+                            inList = true;
+                            retval = 3;
+                        }
+                    }
+
+                    if (inList) // TODO : régler problème de cette partie
+                    {
+                        RatingInfo info = new RatingInfo { Id = ratedIds.Count(), RatedAppartementsId = appartId };
+                        //user.RatedAppartementsIds.Remove(info); // QUESTION : cette ligne ne fonctionne pas, je ne comprends pas pour quoi
+                        retval = 1;
+                    }
+                    else
+                    {
+                        retval = 4;
+                    }
+
+                    appart.Rating--; // _context.Appartements.Find(appartId).Rating--;
                 }
             }
 
