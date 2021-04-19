@@ -1,21 +1,38 @@
-﻿@model IEnumerable<Razor_Pre_TPI_AppartRental.Models.AppartementViewModel>
-
+﻿using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+@model IEnumerable<Razor_Pre_TPI_AppartRental.Models.AppartementViewModel>
 @{ ViewData["Title"] = "Index"; }
 
 <h1>Index</h1>
 
-@{ if (User.IsInRole("0"))
-                {
-    <p>testtesttesttest</p> }
-                else if (User.IsInRole("admin"))
-                {
-    <p>admin</p> }
-                else if (User.IsInRole("ADMIN"))
-                {
-    <p>ADMIN</p> }
-                else
-                {
-    <p>ooooooooooooooooooooooo</p> } }
+@{
+<p>@User.Identity.Name</p>
+<p>@User.Identity.AuthenticationType</p>
+<p>@User.Identity.ToString()</p>
+<p>@User.Claims.ToList()</p>
+<p>@User.GetType()</p>
+<p>@User.Identities.ToList()</p>
+<p>@User.Identity.IsAuthenticated</p>
+<p></p>
+
+    if (User.IsInRole("0"))
+    {
+        <p>0</p> 
+    }
+    else if (User.IsInRole("admin"))
+    {
+        <p>admin</p> 
+    }
+    else if (User.IsInRole("ADMIN"))
+    {
+        <p>ADMIN</p> 
+    }
+    else
+    {
+        <p>aucun rôle n'a été reconnu</p> 
+    } 
+    
+ }
 <p>
     <a asp-action="Create">Create New</a> <!--Question : comment on accède a l'utilisateur ? (je voudrai afficher ce bouton seulement si l'utilisateur a les droit admin par exemple)-->
 </p>

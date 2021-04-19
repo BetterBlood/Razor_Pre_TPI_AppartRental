@@ -79,6 +79,7 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
         }
 
         // GET: Appartements/Create
+        [Authorize(Roles = "admin")]
         public IActionResult Create()
         {
             return View();

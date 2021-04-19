@@ -12,6 +12,7 @@ using Razor_Pre_TPI_AppartRental.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Razor_Pre_TPI_AppartRental
 {
@@ -84,5 +85,6 @@ namespace Razor_Pre_TPI_AppartRental
                 endpoints.MapRazorPages();
             });
         }
+
     }
 }
