@@ -1,40 +1,38 @@
-﻿using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.Owin;
-@model IEnumerable<Razor_Pre_TPI_AppartRental.Models.AppartementViewModel>
+﻿@model IEnumerable<Razor_Pre_TPI_AppartRental.Models.AppartementViewModel>
 @{ ViewData["Title"] = "Index"; }
 
 <h1>Index</h1>
 
 @{
-<p>@User.Identity.Name</p>
-<p>@User.Identity.AuthenticationType</p>
-<p>@User.Identity.ToString()</p>
-<p>@User.Claims.ToList()</p>
-<p>@User.GetType()</p>
-<p>@User.Identities.ToList()</p>
-<p>@User.Identity.IsAuthenticated</p>
-<p></p>
 
     if (User.IsInRole("0"))
     {
-        <p>0</p> 
+        <p><strong>0</strong></p> 
     }
     else if (User.IsInRole("admin"))
     {
-        <p>admin</p> 
+        <p><strong>admin</strong></p> 
+    }
+    else if (User.IsInRole("Admin"))
+    {
+        <p><strong>acces Admin</strong></p> 
+        <a asp-action="Create">Create New</a>
     }
     else if (User.IsInRole("ADMIN"))
     {
-        <p>ADMIN</p> 
+        <p><strong>ADMIN</strong></p> 
     }
     else
     {
-        <p>aucun rôle n'a été reconnu</p> 
-    } 
-    
- }
+        <p><strong>aucun rôle n'a été reconnu</strong></p> 
+    }
+}
+
+
+<!--<button id="tmp" data-val="0" class="btn btnRole">" assigner role !"</button>--> <!--INFO : j'ai été obligé d'utiliser ce bouton pour assigner à l'utilisateur courant le role que j'ai ajouter dans la table de donnée-->
+
 <p>
-    <a asp-action="Create">Create New</a> <!--Question : comment on accède a l'utilisateur ? (je voudrai afficher ce bouton seulement si l'utilisateur a les droit admin par exemple)-->
+    <!--<a asp-action="Create">Create New</a> <!--Question : comment on accède a l'utilisateur ? (je voudrai afficher ce bouton seulement si l'utilisateur a les droit admin par exemple)-->
 </p>
 <table class="table">
     <thead>
@@ -83,7 +81,8 @@ using Microsoft.AspNet.Identity.Owin;
         <a asp-action="Details" asp-route-id="@item.AppartementId">Details</a> |
         <a asp-action="Delete" asp-route-id="@item.AppartementId">Delete</a>
     </td>
-</tr>}
+</tr>
+}
     </tbody>
 </table>
 
@@ -105,6 +104,21 @@ using Microsoft.AspNet.Identity.Owin;
                         else if (data == 1) {
                             btn.attr('data-val', 'True');
                             btn.html(' - ');
+                        }
+                    });
+            });
+            $('.btnRole').click(function (e) {
+                var btn = $(this);
+
+                $.get('/Appartements/Test',
+                    function (data) {
+                        if (data == 0) {
+                            btn.attr('data-val', 'False');
+                            btn.html(' role ? ');
+                        }
+                        else if (data == 1) {
+                            btn.attr('data-val', 'True');
+                            btn.html(' role assigné ! ');
                         }
                     });
             });

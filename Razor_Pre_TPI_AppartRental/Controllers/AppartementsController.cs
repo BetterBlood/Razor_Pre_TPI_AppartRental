@@ -32,6 +32,17 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
             return usr?.Id;
         }
 
+        [HttpGet]
+        public async Task<JsonResult> Test()
+        {
+            int retval = 0;
+
+            await _userManager.AddToRoleAsync(await GetCurrentUserAsync(), "Admin");
+            
+
+            return Json(retval);
+        }
+
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
         // GET: Appartements
@@ -79,7 +90,7 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
         }
 
         // GET: Appartements/Create
-        [Authorize(Roles = "admin")]
+        [Authorize(Roles = "Admin")] // OR : les roles séparés pas une virgule. AND : une ligne pour chaque role
         public IActionResult Create()
         {
             return View();

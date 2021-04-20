@@ -47,12 +47,16 @@ namespace Razor_Pre_TPI_AppartRental
 
             // ce qu'il faut mettre.... :
             services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+                .AddRoles<IdentityRole>() // pour les roles
+                .AddRoleManager<RoleManager<IdentityRole>>() // pour les roles
                 .AddEntityFrameworkStores<ApplicationDbContext>(); // IMPORTANT : il faut absolument mettre comme cela sinon l'acces a la page register et login n'est pas possible !!!
 
             
 
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -84,6 +88,7 @@ namespace Razor_Pre_TPI_AppartRental
                     pattern: "{controller=Home}/{action=Index}/{id?}");
                 endpoints.MapRazorPages();
             });
+
         }
 
     }
