@@ -69,6 +69,7 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
                     //item.Visited = m.Visited;
                 }
             }
+            
             return View(model);
         }
 
@@ -113,6 +114,7 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
         }
 
         // GET: Appartements/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -132,6 +134,7 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Year,Surface")] Appartement appartement)
         {
@@ -163,7 +166,9 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
             return View(appartement);
         }
 
+
         // GET: Appartements/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
