@@ -14,6 +14,7 @@ namespace Razor_Pre_TPI_AppartRental.Models
         public int Surface { get; set; }
         public bool Visited { get; set; }
         public int Rating { get; set; }
+        public bool Rated { get; set; }
         
     }
 }

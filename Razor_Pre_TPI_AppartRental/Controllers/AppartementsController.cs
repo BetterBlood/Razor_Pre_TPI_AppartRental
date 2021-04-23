@@ -49,6 +49,7 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
         public async Task<IActionResult> Index()
         {
             var userId = await GetCurrentUserId();
+
             var model = await _context.Appartements.Select(x =>
                 new AppartementViewModel
                 {
@@ -61,12 +62,13 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
 
             foreach (var item in model)
             {
-                var m = await _context.UserAppartements.FirstOrDefaultAsync(x => x.UserId == userId && x.AppartementId == item.AppartementId); // QUESTION : pourquoi ici on prend UserAppartement au lieu de juste appartement
+                var m = await _context.UserAppartements.FirstOrDefaultAsync(x => x.UserId == userId && x.AppartementId == item.AppartementId);
                 //var m = await _context.Appartements.FirstOrDefaultAsync(x => x.Id == item.AppartementId);
                 if (m != null)
                 {
                     item.InWishlist = true;
-                    //item.Visited = m.Visited;
+                    //item.Visited = m.Visited; // pas important car j'en ai pas besoin pour l'instant
+                    //item.Rated = m.Rated; // pas important car j'en ai pas besoin pour l'instant
                 }
             }
             
@@ -102,7 +104,7 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Year,Surface")] Appartement appartement)
+        public async Task<IActionResult> Create([Bind("Id,Title,Year,Surface")] Appartement appartement) // TODO : voir si l'on doit ajouter Rating ici
         {
             if (ModelState.IsValid)
             {
@@ -136,7 +138,7 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
         [HttpPost]
         [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Year,Surface")] Appartement appartement)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Year,Surface")] Appartement appartement) // TODO : voir si l'on doit ajouter Rating ici
         {
             if (id != appartement.Id)
             {
@@ -242,7 +244,8 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
                         UserId = userId,
                         AppartementId = appartId,
                         Visited = false,
-                        Rating = rating
+                        Rating = rating,
+                        Rated = false
                     }
                 );
 
@@ -261,6 +264,7 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
             int retval = -1;
             var userId = await GetCurrentUserId();
             var user = await GetCurrentUserAsync();
+            bool alreadyRated = _context.UserAppartements.FirstOrDefault(x => x.AppartementId == appartId && x.UserId == userId).Rated;
 
             if (val == 1)
             {
@@ -268,26 +272,30 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
 
                 if (appart != null)// && !user.RatedAppartementsIds.Contains(appartId))
                 {
-                    bool inList = false;
+                    //bool inList = false;
                     var ratedIds = user.RatedAppartementsIds;
 
-                    foreach(RatingInfo info in ratedIds) // parcour la list des appartements déjà noté par l'utilisateur
-                    {
-                        if (info.RatedAppartementsId == appartId) // si l'appart y est déjà on modifie le bool inList
-                        {
-                            inList = true;
-                            retval = 2;
-                        }
-                    }
+                    //foreach(RatingInfo info in ratedIds) // parcour la list des appartements déjà noté par l'utilisateur
+                    //{
+                    //    if (info.RatedAppartementsId == appartId) // si l'appart y est déjà on modifie le bool inList
+                    //    {
+                    //        inList = true;
+                    //        retval = 2;
+                    //    }
+                    //}
 
-                    if (!inList) // TODO : régler problème de cette partie
+                    if (!alreadyRated) // TODO : régler problème de cette partie
                     {
                         RatingInfo info = new RatingInfo { Id = ratedIds.Count(), RatedAppartementsId = appartId };
-                        //user.RatedAppartementsIds.Add(info); // QUESTION : cette ligne ne fonctionne pas, je ne comprends pas pour quoi
+                        //user.RatedAppartementsIds.Add(info); // QUESTION : cette ligne ne fonctionne pas, je ne comprends pas pourquoi
+                        _context.UserAppartements.FirstOrDefault(x => x.AppartementId == appartId && x.UserId == userId).Rated = true; // autre option pour modifier le rating
+                        appart.Rating++;
                         retval = 0;
                     }
-
-                    appart.Rating++; // _context.Appartements.Find(appartId).Rating++;
+                    else
+                    {
+                        retval = 2;
+                    }
                 }
             }
             else
@@ -296,31 +304,32 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
 
                 if (appart != null)// && user.RatedAppartementsIds.Contains(appartId))
                 {
-                    bool inList = false;
+                    //bool inList = false;
                     
                     var ratedIds = user.RatedAppartementsIds;
 
-                    foreach (RatingInfo info in ratedIds) // parcour la list des appartements déjà noté par l'utilisateur
-                    {
-                        if (info.RatedAppartementsId == appartId) // si l'appart y est déjà on modifie le bool inList
-                        {
-                            inList = true;
-                            retval = 3;
-                        }
-                    }
+                    //foreach (RatingInfo info in ratedIds) // parcour la list des appartements déjà noté par l'utilisateur
+                    //{
+                    //    if (info.RatedAppartementsId == appartId) // si l'appart y est déjà on modifie le bool inList
+                    //    {
+                    //        inList = true;
+                    //        retval = 3;
+                    //    }
+                    //}
 
-                    if (inList) // TODO : régler problème de cette partie
+                    if (alreadyRated) // TODO : régler problème de cette partie
                     {
                         RatingInfo info = new RatingInfo { Id = ratedIds.Count(), RatedAppartementsId = appartId };
-                        //user.RatedAppartementsIds.Remove(info); // QUESTION : cette ligne ne fonctionne pas, je ne comprends pas pour quoi
+                        //user.RatedAppartementsIds.Remove(info); // QUESTION : cette ligne ne fonctionne pas, je ne comprends pas pourquoi
+                        _context.UserAppartements.FirstOrDefault(x => x.AppartementId == appartId && x.UserId == userId).Rated = false; // autre option pour modifier le rating
+                        
+                        appart.Rating--;
                         retval = 1;
                     }
                     else
                     {
-                        retval = 4;
+                        retval = 3;
                     }
-
-                    appart.Rating--; // _context.Appartements.Find(appartId).Rating--;
                 }
             }
 

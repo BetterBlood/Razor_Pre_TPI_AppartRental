@@ -4,7 +4,6 @@
 <h1>Index</h1>
 
 @{
-
     if (User.IsInRole("0"))
     {
         <p><strong>0</strong></p> 
@@ -49,7 +48,7 @@
             <th>
                 @Html.DisplayNameFor(model => model.Surface)
             </th>
-            <th>
+            <th  class="text-center">
                 @Html.DisplayNameFor(model => model.Rating)
             </th>
             <th></th>
@@ -66,14 +65,14 @@
         @Html.DisplayFor(modelItem => item.Year)
     </td>
     <td>
-        <button id="@item.AppartementId" data-val="@item.InWishlist" class="btn btnWish">
-            @(item.InWishlist ? " - " : " + ")
+        <button id="@item.AppartementId" data-val="@item.InWishlist" class="btn btnWish border-secondary">
+            @(item.InWishlist ? " retirer " : " ajouter ")
         </button>
     </td>
     <td>
         @Html.DisplayFor(modelItem => item.Surface)
     </td>
-    <td>
+    <td class="text-center">
         @Html.DisplayFor(modelItem => item.Rating)
     </td>
     <td>
@@ -99,11 +98,11 @@
                     function (data) {
                         if (data == 0) {
                             btn.attr('data-val', 'False');
-                            btn.html(' + ');
+                            btn.html(' ajouter ');
                         }
                         else if (data == 1) {
                             btn.attr('data-val', 'True');
-                            btn.html(' - ');
+                            btn.html(' retirer ');
                         }
                     });
             });

@@ -23,7 +23,9 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
         public async Task<IActionResult> Index()
         {
             var id = await GetCurrentUserId();
+
             var userAppartements = _context.UserAppartements.Where(x => x.UserId == id);
+
             var model = userAppartements.Select(x => new AppartementViewModel
             {
                 AppartementId = x.AppartementId,
@@ -31,7 +33,8 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
                 Year = x.Appartement.Year,
                 Visited = x.Visited,
                 InWishlist = true,
-                Rating = x.Rating
+                Rating = x.Rating,
+                Rated = x.Rated // QUESTION : je ne comprend pas pourquoi je ne peux pas mettre Rated = x.Rated
             }).ToList();
 
             return View(model);
@@ -54,7 +57,7 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
 
             if (val == 1)
             {
-                var appart = _context.UserAppartements.FirstOrDefault(x => x.AppartementId == appartId && x.UserId == userId); // QUESTION : pourquoi c'est toujours null // réponse : j'avais un mauvais lien........
+                var appart = _context.UserAppartements.FirstOrDefault(x => x.AppartementId == appartId && x.UserId == userId);
                 if (appart != null)
                 {
                     appart.Visited = false;

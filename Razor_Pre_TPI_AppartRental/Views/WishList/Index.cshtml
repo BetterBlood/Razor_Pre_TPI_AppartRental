@@ -21,6 +21,9 @@
                 @Html.DisplayNameFor(model => model.Visited)
             </th>
             <th>
+                @Html.DisplayNameFor(model => model.Rated)
+            </th>
+            <th class="text-center">
                 @Html.DisplayNameFor(model => model.Rating)
             </th>
             <th></th>
@@ -29,32 +32,35 @@
     <tbody>
         @foreach (var item in Model)
         {
-<tr>
-    <td>
-        @Html.DisplayFor(modelItem => item.AppartementId)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.Title)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.Year)
-    </td>
-    <td>
-        <button id="@item.AppartementId" data-val="@item.Visited" class="btn btnVisited border-dark">
-            @(item.Visited ? " ✓ " : " not visited yet ")
-        </button>
-    </td>
-    <td>
-        <button id="@item.AppartementId" data-val="@(item.Rating <= 5)" class="btn btnRate border-dark">
-            @( item.Rating <= 5 ? " rate (" + item.Rating + ")" : " unrate (" + item.Rating + ")") <!--Question : comment on accède a l'utilisateur ? ( si j'aimerais par exemple faire un affichage différent en fonction de la présence ou nom de l'id de l'appartement dans une liste que l'utilisateur possède ?-->
-        </button>
-    </td>
-    <td>
-        <a asp-action="Edit" asp-controller="Appartements" asp-route-id="@item.AppartementId">Edit</a> |
-        <a asp-action="Details" asp-controller="Appartements" asp-route-id="@item.AppartementId">Details</a> |
-        <a asp-route-id="@item.AppartementId" id="@item.AppartementId" class="aRemoveFromWish">Remove</a>
-    </td>
-</tr>}
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.AppartementId)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Year)
+            </td>
+            <td>
+                <button id="@item.AppartementId" data-val="@item.Visited" class="btn btnVisited border-dark">
+                    @(item.Visited ? " ✓ " : " not visited yet ")
+                </button>
+            </td>
+            <td>
+                <button id="@item.AppartementId" data-val="@(item.Rated)" class="btn btnRate border-dark">
+                    @( !item.Rated ? " rate " : " unrate ") <!--Question : comment on accède a l'utilisateur ? ( si j'aimerais par exemple faire un affichage différent en fonction de la présence ou nom de l'id de l'appartement dans une liste que l'utilisateur possède ?-->
+                </button>
+            </td>
+            <td class="text-center">
+                @Html.DisplayFor(modelItem => item.Rating)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-controller="Appartements" asp-route-id="@item.AppartementId">Edit</a> |
+                <a asp-action="Details" asp-controller="Appartements" asp-route-id="@item.AppartementId">Details</a> |
+                <a asp-route-id="@item.AppartementId" id="@item.AppartementId" class="aRemoveFromWish">Remove</a>
+            </td>
+        </tr>}
     </tbody>
 </table>
 
@@ -89,7 +95,7 @@
             $('.btnRate').click(function (e) {
                 var btn = $(this);
                 var AppartementId = btn.attr('id');
-                var AppartementVal = btn.attr('data-val') == "False" ? 0 : 1;
+                var AppartementVal = btn.attr('data-val') == "True" ? 0 : 1;
 
                 $.get('/Appartements/Rate?appartId=' + AppartementId + '&val=' + AppartementVal,
                     function (data) {

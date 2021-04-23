@@ -11,6 +11,7 @@ namespace Razor_Pre_TPI_AppartRental.Data
         public int AppartementId { get; set; }
         public bool Visited { get; set; }
         public int Rating { get; set; }
+        public bool Rated { get; set; }
 
         public virtual ApplicationUser User { get; set; }
         public virtual Appartement Appartement { get; set; }
