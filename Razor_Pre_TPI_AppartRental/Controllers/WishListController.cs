@@ -34,10 +34,25 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
                 Visited = x.Visited,
                 InWishlist = true,
                 Rating = x.Rating,
-                Rated = x.Rated
+                Rated = x.Rated //IsInRatingInfos(x.AppartementId).Result // TODO : résoudre problème....
             }).ToList();
 
             return View(model);
+        }
+
+        private async Task<bool> IsInRatingInfos(int appartId)
+        {
+            List<RatingInfo> ratingInfos = (List<RatingInfo>)(await GetCurrentUserAsync()).RatingInfo;
+            
+            foreach (RatingInfo ratingInfo in ratingInfos)
+            {
+                if (ratingInfo.AppartementId == appartId)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);

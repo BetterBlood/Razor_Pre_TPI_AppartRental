@@ -7,9 +7,9 @@ namespace Razor_Pre_TPI_AppartRental.Data
 {
     public class RatingInfo
     {
-        public int Id { get; set; }
+        public string UserId { get; set; }
 
-        public int RatedAppartementsId { get; set; }
+        public int AppartementId { get; set; }
 
     }
 }

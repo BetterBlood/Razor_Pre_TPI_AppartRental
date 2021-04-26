@@ -69,6 +69,7 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
                     item.InWishlist = true;
                     //item.Visited = m.Visited; // pas important car j'en ai pas besoin pour l'instant
                     //item.Rated = m.Rated; // pas important car j'en ai pas besoin pour l'instant
+                    item.Rated = m.Rated;
                 }
             }
             
@@ -270,26 +271,24 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
             {
                 var appart = _context.Appartements.FirstOrDefault(x => x.Id == appartId);
 
-                if (appart != null)// && !user.RatedAppartementsIds.Contains(appartId))
+                if (appart != null)
                 {
-                    //bool inList = false;
-                    var ratedIds = user.RatedAppartementsIds;
-
-                    //foreach(RatingInfo info in ratedIds) // parcour la list des appartements déjà noté par l'utilisateur
-                    //{
-                    //    if (info.RatedAppartementsId == appartId) // si l'appart y est déjà on modifie le bool inList
-                    //    {
-                    //        inList = true;
-                    //        retval = 2;
-                    //    }
-                    //}
-
-                    if (!alreadyRated) // TODO : régler problème de cette partie
+                    if (!alreadyRated)
                     {
-                        RatingInfo info = new RatingInfo { Id = ratedIds.Count(), RatedAppartementsId = appartId };
-                        //user.RatedAppartementsIds.Add(info); // QUESTION : cette ligne ne fonctionne pas, je ne comprends pas pourquoi
+                        //RatingInfo info = new RatingInfo { UserId = userId, AppartementId = appartId };
+                        //user.RatingInfo.Add(info);
+
+                        _context.RatingInfos.Add(
+                            new RatingInfo
+                            {
+                                UserId = userId,
+                                AppartementId = appartId
+                            }
+                        );
+
                         _context.UserAppartements.FirstOrDefault(x => x.AppartementId == appartId && x.UserId == userId).Rated = true; // autre option pour modifier le rating
                         appart.Rating++;
+
                         retval = 0;
                     }
                     else
@@ -302,29 +301,22 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
             {
                 var appart = _context.Appartements.FirstOrDefault(x => x.Id == appartId);
 
-                if (appart != null)// && user.RatedAppartementsIds.Contains(appartId))
+                if (appart != null)
                 {
-                    //bool inList = false;
-                    
-                    var ratedIds = user.RatedAppartementsIds;
-
-                    //foreach (RatingInfo info in ratedIds) // parcour la list des appartements déjà noté par l'utilisateur
-                    //{
-                    //    if (info.RatedAppartementsId == appartId) // si l'appart y est déjà on modifie le bool inList
-                    //    {
-                    //        inList = true;
-                    //        retval = 3;
-                    //    }
-                    //}
-
-                    if (alreadyRated) // TODO : régler problème de cette partie
+                    if (alreadyRated)
                     {
-                        RatingInfo info = new RatingInfo { Id = ratedIds.Count(), RatedAppartementsId = appartId };
-                        //user.RatedAppartementsIds.Remove(info); // QUESTION : cette ligne ne fonctionne pas, je ne comprends pas pourquoi
-                        _context.UserAppartements.FirstOrDefault(x => x.AppartementId == appartId && x.UserId == userId).Rated = false; // autre option pour modifier le rating
-                        
-                        appart.Rating--;
-                        retval = 1;
+                        var rate = _context.RatingInfos.FirstOrDefault(x => x.AppartementId == appartId && x.UserId == userId);
+                        if (rate != null)
+                        {
+                            _context.RatingInfos.Remove(rate);
+                            _context.UserAppartements.FirstOrDefault(x => x.AppartementId == appartId && x.UserId == userId).Rated = false; // autre option pour modifier le rating
+                            appart.Rating--;
+                            retval = 0;
+                        }
+                        else
+                        {
+                            retval = 2;
+                        }
                     }
                     else
                     {
