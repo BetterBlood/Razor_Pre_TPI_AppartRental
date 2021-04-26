@@ -34,7 +34,7 @@ namespace Razor_Pre_TPI_AppartRental.Controllers
                 Visited = x.Visited,
                 InWishlist = true,
                 Rating = x.Rating,
-                Rated = x.Rated // QUESTION : je ne comprend pas pourquoi je ne peux pas mettre Rated = x.Rated
+                Rated = x.Rated
             }).ToList();
 
             return View(model);

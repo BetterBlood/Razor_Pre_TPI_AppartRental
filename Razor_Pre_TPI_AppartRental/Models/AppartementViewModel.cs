@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,6 +16,6 @@ namespace Razor_Pre_TPI_AppartRental.Models
         public bool Visited { get; set; }
         public int Rating { get; set; }
         public bool Rated { get; set; }
-        
+
     }
 }
